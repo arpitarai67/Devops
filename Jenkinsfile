@@ -1,57 +1,66 @@
 pipeline {
     agent any
-    
+
     environment {
-        // Optional: Add your Node.js home path here
+        // Add any environment variables here
+        NODE_HOME = '/usr/local/bin/node'  // Example path for Node.js
+        PATH = "${env.NODE_HOME}:${env.PATH}"
     }
 
     stages {
-        stage('Clone Repository') {
+        stage('Checkout') {
             steps {
-                git 'https://your-repository-url.git'  // Replace with your Git repo URL
-            }
-        }
-        
-        stage('Install Dependencies') {
-            steps {
-                dir('ecom-master') {  // Assuming your frontend is in the 'ecom-master' folder
-                    sh 'npm install'
-                }
+                // Pulls the latest code from the repository
+                git 'https://github.com/arpitarai67/Devops.git'
             }
         }
 
-        stage('Run Tests') {
+        stage('Install Dependencies') {
             steps {
-                dir('ecom-master') {
-                    sh 'npm test -- --maxWorkers=1'  // Run tests with single worker for Jenkins
+                script {
+                    // Install npm dependencies
+                    sh 'npm install'
                 }
             }
         }
 
         stage('Build') {
             steps {
-                dir('ecom-master') {
-                    sh 'npm run build'  // This will create a production-ready build of your app
+                script {
+                    // Run build command (production build in React)
+                    sh 'npm run build'
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                script {
+                    // Run tests (assuming you have a testing script defined)
+                    sh 'npm test'
                 }
             }
         }
 
         stage('Deploy') {
             steps {
-                // Example: Deploy to your server using SSH or any other method
-                sh '''
-                ssh user@yourserver.com "cd /path/to/project && git pull && npm install && npm run build"
-                '''
+                script {
+                    // Add your deployment steps here
+                    // For example, deploy to a server or cloud service
+                    echo 'Deploying application...'
+                }
             }
         }
     }
 
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            // Actions to take if the build succeeds (e.g., notify success)
+            echo 'Build and deploy succeeded!'
         }
         failure {
-            echo 'Pipeline failed!'
+            // Actions to take if the build fails (e.g., notify failure)
+            echo 'Build or deploy failed!'
         }
     }
 }
