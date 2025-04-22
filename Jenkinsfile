@@ -1,8 +1,8 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:16'  // or 'node:18' if needed
-        }
+    agent any
+
+    tools {
+        nodejs "Node23"  // Make sure this matches the name in Global Tool Configuration
     }
 
     stages {
@@ -17,5 +17,11 @@ pipeline {
                 sh 'npm run build'
             }
         }
+
+        // stage('Test') {
+        //     steps {
+        //         sh 'npm test'
+        //     }
+        // }
     }
 }
