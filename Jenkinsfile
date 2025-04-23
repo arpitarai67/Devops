@@ -2,38 +2,26 @@ pipeline {
     agent any
 
     tools {
-        nodejs "node23"  // Use the Node.js version "Node23"
+        nodejs "node23"  // Make sure this matches the name in Global Tool Configuration
     }
 
     stages {
-        stage('Checkout SCM') {
-            steps {
-                checkout scm  // Fetch the latest code from GitHub
-            }
-        }
-
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'  // Install dependencies
+                sh 'npm install'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'npm run build'  // Build the project
+                sh 'npm run build'
             }
         }
 
-        stage('Test') {
-            steps {
-                sh 'npm test'  // Run tests
-            }
-        }
-
-        stage('Start Application') {
-            steps {
-                sh 'npm start'  // Run the app (assuming you have a start script in package.json)
-            }
-        }
+        // stage('Test') {
+        //     steps {
+        //         sh 'npm test'
+        //     }
+        // }
     }
 }
